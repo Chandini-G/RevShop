@@ -1,0 +1,44 @@
+┌─────────────────────────────────────────────┐
+│             CONSOLE INTERFACE LAYER         │
+├─────────────────────────────────────────────┤
+│ ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│ │ RevShopApp  │  │ BuyerMenu   │  │ SellerMenu  │ │
+│ │ (Controller)│  │ (Controller)│  │ (Controller)│ │
+│ └─────────────┘  └─────────────┘  └─────────────┘ │
+└─────────────────────────┬───────────────────────┘
+                          │
+┌─────────────────────────────────────────────┐
+│        SERVICE LAYER (Business Logic)       │
+├─────────────────────────────────────────────┤
+│ ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│ │ AuthService │  │ BuyerService│  │ SellerService│ │
+│ │ CartService │  │ OrderService│  │ ProductService│ │
+│ │ PaymentSvc  │  │ ReviewSvc   │  │ FavouriteSvc │ │
+│ │ Notification│  │             │  │ InventorySvc │ │
+└─────────────────┬───────────────────────────┘
+                  │
+┌─────────────────────────────────────────────┐
+│         DATA ACCESS LAYER (DAO)             │
+├─────────────────────────────────────────────┤
+│ ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│ │ UserDAO     │  │ ProductDAO  │  │ OrderDAO    │ │
+│ │ SellerDAO   │  │ CartDAO     │  │ ReviewDAO   │ │
+│ │ Notification│  │ FavouriteDAO│  │ PaymentDAO  │ │
+└─────────────────┬───────────────────────────┘
+                  │
+┌─────────────────────────────────────────────┐
+│           MODEL LAYER (Entities)            │
+├─────────────────────────────────────────────┤
+│ ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│ │ User        │  │ Product     │  │ Order       │ │
+│ │ CartItem    │  │ Review      │  │ OrderItem   │ │
+│ │ Favourite   │  │ Payment     │  │ Notification│ │
+└─────────────────┬───────────────────────────┘
+                  │
+┌─────────────────────────────────────────────┐
+│            DATABASE LAYER (Oracle SQL)      │
+├─────────────────────────────────────────────┤
+│           revshop Database                  │
+│  Tables: Users, Products, Cart, Orders,    │
+│  Favourites, Reviews, Payments, Notifications│
+└─────────────────────────────────────────────┘

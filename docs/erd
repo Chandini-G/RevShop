@@ -1,0 +1,45 @@
+┌────────────────────────┐              ┌────────────────────────┐
+│         USERS          │              │     NOTIFICATIONS      │
+├────────────────────────┤              ├────────────────────────┤
+│ user_id (PK)  <────────┼──────────────┤ notification_id (PK)   │
+│ name                   │              │ user_id (FK)           │
+│ email                  │              │ message                │
+│ password               │              │ created_at             │
+│ role                   │              └────────────────────────┘
+│ security_question      │
+│ security_answer        │
+└─────┬───────────┬──────┘
+      │           │
+      │           │             ┌────────────────────────┐
+      │           └────────────>│        PRODUCTS        │
+      │           (seller_id)   ├────────────────────────┤
+      │                         │ product_id (PK) <──────┼──────────┐
+      │           ┌────────────>│ seller_id (FK)         │          │
+      │           │             │ name                   │          │
+      │           │             │ description            │          │
+      │           │             │ category               │          │
+      │           │             │ price / mrp            │          │
+      │           │             │ stock / threshold      │          │
+      │           │             └─────┬──────────┬───────┘          │
+      │           │                   │          │                  │
+┌─────▼──────────┐│     ┌─────────────▼────┐ ┌───▼──────────────┐   │
+│     ORDERS     ││     │       CART       │ │    FAVOURITES    │   │
+├────────────────┤│     ├──────────────────┤ ├──────────────────┤   │
+│ order_id (PK) <┼┤     │ cart_id (PK)     │ │ fav_id (PK)      │   │
+│ buyer_id (FK)  ││     │ buyer_id (FK)    │ │ buyer_id (FK)    │   │
+│ order_date     ││     │ product_id (FK) <┼─┤ product_id (FK) <┼───┘
+│ total_amount   ││     │ quantity         │ └──────────────────┘
+│ status         ││     └──────────────────┘
+└─────┬──────────┘│
+      │           │             ┌────────────────────────┐
+      │           │             │        REVIEWS         │
+      ▼           │             ├────────────────────────┤
+┌────────────────┐│             │ review_id (PK)         │
+│    PAYMENTS    │└────────────>│ product_id (FK)        │
+├────────────────┤              │ buyer_id (FK)          │
+│ payment_id (PK)│              │ rating                 │
+│ order_id (FK)  │              │ review_comment         │
+│ payment_method │              │ review_date            │
+│ payment_status │              └────────────────────────┘
+│ payment_date   │
+└────────────────┘

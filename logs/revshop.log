@@ -1,9 +1,0 @@
-2026-02-12 00:01:53.969 [main] INFO  RevShopApp - ========================================
-2026-02-12 00:01:54.026 [main] INFO  RevShopApp - 🚀 REVSHOP APPLICATION STARTING
-2026-02-12 00:01:54.028 [main] INFO  RevShopApp - ========================================
-2026-02-12 00:02:05.275 [main] INFO  RevShopApp - User attempting login
-2026-02-12 00:02:21.673 [main] INFO  RevShopApp - User logged in: chandinigorle@gmail.com (ID: 21, Role: BUYER)
-2026-02-12 00:02:21.786 [main] INFO  RevShopApp - Buyer menu opened for user: chandinigorle@gmail.com
-2026-02-12 09:32:21.295 [main] INFO  RevShopApp - ========================================
-2026-02-12 09:32:21.300 [main] INFO  RevShopApp - 🚀 REVSHOP APPLICATION STARTING
-2026-02-12 09:32:21.302 [main] INFO  RevShopApp - ========================================

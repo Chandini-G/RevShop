@@ -4,57 +4,30 @@ import java.sql.*;
 import com.revshop.util.DBUtil;
 
 public class NotificationDAO {
-
-    // Add notification
-    public void addNotification(int userId, String message) {
-
-        String sql = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
-
+    
+    public void addNotification(int userId, String title, String message) {
+        String sql = "INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)";
+        
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-
+            
             ps.setInt(1, userId);
-            ps.setString(2, message);
+            ps.setString(2, title);
+            ps.setString(3, message);
             ps.executeUpdate();
-
+            
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error adding notification: " + e.getMessage());
         }
     }
-
-    // View notifications
-    public void viewNotifications(int userId) {
-
-        String sql = """
-            SELECT message, created_at
-            FROM notifications
-            WHERE user_id = ?
-            ORDER BY created_at DESC
-        """;
-
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            System.out.println("\n===== NOTIFICATIONS =====");
-
-            boolean found = false;
-
-            while (rs.next()) {
-                found = true;
-                System.out.println("----------------------------");
-                System.out.println(rs.getTimestamp("created_at"));
-                System.out.println(rs.getString("message"));
-            }
-
-            if (!found) {
-                System.out.println("No notifications found.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    
+    public ResultSet getNotifications(int userId) throws SQLException {
+        String sql = "SELECT title, message, created_at FROM notifications " +
+                    "WHERE user_id = ? ORDER BY created_at DESC";
+        
+        Connection con = DBUtil.getConnection();
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, userId);
+        return ps.executeQuery();
     }
 }

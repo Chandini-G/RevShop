@@ -1,34 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-
+    
     <Properties>
-        <Property name="LOG_PATTERN">
-            %d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %c - %msg%n
+        <!-- This pattern includes date, time, thread, level, class, message -->
+        <Property name="CONSOLE_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c{1} - %msg%n
         </Property>
-        <Property name="LOG_FILE">
-            logs/revshop.log
+        <Property name="FILE_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c{1} - %msg%n
         </Property>
+        <Property name="LOG_FILE">logs/revshop.log</Property>
     </Properties>
 
     <Appenders>
-
+        <!-- Console Appender with FULL pattern -->
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <PatternLayout pattern="${CONSOLE_PATTERN}"/>
         </Console>
-
-        <File name="FileLogger" fileName="${LOG_FILE}" append="true">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
-        </File>
-
+        
+        <!-- Rolling File Appender -->
+        <RollingFile name="FileLogger" 
+                     fileName="${LOG_FILE}"
+                     filePattern="logs/revshop-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${FILE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
     </Appenders>
 
     <Loggers>
-
+        <!-- Root logger – logs everything to console and file -->
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="FileLogger"/>
         </Root>
-
+        
+        <!-- Optional: detailed logging for DAO layer -->
+        <Logger name="com.revshop.dao" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileLogger"/>
+        </Logger>
     </Loggers>
-
+    
 </Configuration>

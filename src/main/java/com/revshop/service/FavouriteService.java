@@ -1,94 +1,75 @@
 package com.revshop.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import com.revshop.util.DBUtil;
+import com.revshop.dao.FavouriteDAO;
+import com.revshop.dao.CartDAO;
 
 public class FavouriteService {
-
-    // -------- ADD TO FAVOURITES --------
+    private FavouriteDAO favouriteDAO = new FavouriteDAO();
+    private CartDAO cartDAO = new CartDAO();
+    
     public void addToFavourites(int buyerId, int productId) {
-
-        String sql = """
-            INSERT INTO favourites (buyer_id, product_id)
-            VALUES (?, ?)
-        """;
-
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, buyerId);
-            ps.setInt(2, productId);
-            ps.executeUpdate();
-
-            System.out.println("Added to favourites");
-
-        } catch (Exception e) {
-            System.out.println("Already in favourites");
+        if (favouriteDAO.addFavourite(buyerId, productId)) {
+            System.out.println("✅ Added to favourites!");
+        } else {
+            System.out.println("❌ Failed to add to favourites.");
         }
     }
-
-    // -------- VIEW FAVOURITES --------
-    public void viewFavourites(int buyerId) {
-
-        String sql = """
-            SELECT p.product_id, p.name, p.price
-            FROM favourites f
-            JOIN products p ON f.product_id = p.product_id
-            WHERE f.buyer_id = ?
-        """;
-
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, buyerId);
-            ResultSet rs = ps.executeQuery();
-
-            System.out.println("\n--- YOUR FAVOURITES ---");
-
-            boolean found = false;
-            while (rs.next()) {
-                found = true;
-                System.out.println(
-                    rs.getInt("product_id") + " | " +
-                    rs.getString("name") + " | ₹" +
-                    rs.getDouble("price")
-                );
-            }
-
-            if (!found)
-                System.out.println("No favourites added");
-
-        } catch (Exception e) {
-            System.out.println("Unable to fetch favourites");
-        }
-    }
-
-    // -------- REMOVE FROM FAVOURITES --------
+    
     public void removeFromFavourites(int buyerId, int productId) {
-
-        String sql = """
-            DELETE FROM favourites
-            WHERE buyer_id = ? AND product_id = ?
-        """;
-
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, buyerId);
-            ps.setInt(2, productId);
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0)
-                System.out.println("Removed from favourites");
-            else
-                System.out.println("Product not in favourites");
-
+        if (favouriteDAO.removeFavourite(buyerId, productId)) {
+            System.out.println("✅ Removed from favourites!");
+        } else {
+            System.out.println("❌ Failed to remove from favourites.");
+        }
+    }
+    
+    public void viewFavourites(int buyerId) {
+        try {
+            ResultSet rs = favouriteDAO.getFavourites(buyerId);
+            
+            System.out.println("\n⭐ YOUR FAVOURITES");
+            System.out.println("====================================");
+            
+            boolean found = false;
+            while (rs != null && rs.next()) {
+                found = true;
+                System.out.println("Product ID: " + rs.getInt("product_id"));
+                System.out.println("Name: " + rs.getString("name"));
+                System.out.println("Price: ₹" + rs.getDouble("price"));
+                System.out.println("------------------------");
+            }
+            
+            if (!found) {
+                System.out.println("No favourites added yet.");
+            }
+            
+            if (rs != null) {
+                rs.close();
+            }
+            
         } catch (Exception e) {
-            System.out.println("Remove failed");
+            System.out.println("Error viewing favourites: " + e.getMessage());
+        }
+    }
+    
+    // NEW: Move favourite to cart
+    public void moveToCart(int buyerId, int productId, int quantity) {
+        if (quantity <= 0) {
+            System.out.println("❌ Quantity must be greater than 0.");
+            return;
+        }
+        
+        // First remove from favourites
+        if (favouriteDAO.removeFavourite(buyerId, productId)) {
+            // Then add to cart
+            if (cartDAO.addToCart(buyerId, productId, quantity)) {
+                System.out.println("✅ Moved from favourites to cart!");
+            } else {
+                System.out.println("❌ Added to cart but couldn't remove from favourites.");
+            }
+        } else {
+            System.out.println("❌ Product not found in favourites.");
         }
     }
 }

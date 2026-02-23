@@ -1,45 +1,87 @@
-┌────────────────────────┐              ┌────────────────────────┐
-│         USERS          │              │     NOTIFICATIONS      │
-├────────────────────────┤              ├────────────────────────┤
-│ user_id (PK)  <────────┼──────────────┤ notification_id (PK)   │
-│ name                   │              │ user_id (FK)           │
-│ email                  │              │ message                │
-│ password               │              │ created_at             │
-│ role                   │              └────────────────────────┘
-│ security_question      │
-│ security_answer        │
-└─────┬───────────┬──────┘
-      │           │
-      │           │             ┌────────────────────────┐
-      │           └────────────>│        PRODUCTS        │
-      │           (seller_id)   ├────────────────────────┤
-      │                         │ product_id (PK) <──────┼──────────┐
-      │           ┌────────────>│ seller_id (FK)         │          │
-      │           │             │ name                   │          │
-      │           │             │ description            │          │
-      │           │             │ category               │          │
-      │           │             │ price / mrp            │          │
-      │           │             │ stock / threshold      │          │
-      │           │             └─────┬──────────┬───────┘          │
-      │           │                   │          │                  │
-┌─────▼──────────┐│     ┌─────────────▼────┐ ┌───▼──────────────┐   │
-│     ORDERS     ││     │       CART       │ │    FAVOURITES    │   │
-├────────────────┤│     ├──────────────────┤ ├──────────────────┤   │
-│ order_id (PK) <┼┤     │ cart_id (PK)     │ │ fav_id (PK)      │   │
-│ buyer_id (FK)  ││     │ buyer_id (FK)    │ │ buyer_id (FK)    │   │
-│ order_date     ││     │ product_id (FK) <┼─┤ product_id (FK) <┼───┘
-│ total_amount   ││     │ quantity         │ └──────────────────┘
-│ status         ││     └──────────────────┘
-└─────┬──────────┘│
-      │           │             ┌────────────────────────┐
-      │           │             │        REVIEWS         │
-      ▼           │             ├────────────────────────┤
-┌────────────────┐│             │ review_id (PK)         │
-│    PAYMENTS    │└────────────>│ product_id (FK)        │
-├────────────────┤              │ buyer_id (FK)          │
-│ payment_id (PK)│              │ rating                 │
-│ order_id (FK)  │              │ review_comment         │
-│ payment_method │              │ review_date            │
-│ payment_status │              └────────────────────────┘
-│ payment_date   │
-└────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────┐
+│                              REVSHOP ENTITY RELATIONSHIP DIAGRAM                   │
+└────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
+│      USERS      │         │   CATEGORIES    │         │    PRODUCTS     │
+├─────────────────┤         ├─────────────────┤         ├─────────────────┤
+│ user_id (PK)    │◄────────┤ category_id(PK) │         │ product_id (PK) │
+│ name            │         │ name            ├────────►│ seller_id (FK)  │
+│ email (UNIQUE)  │         │ is_active       │         │ category_id (FK)│
+│ password        │         │ display_order   │         │ name            │
+│ role            │         │ created_date    │         │ description     │
+│ security_question│         └─────────────────┘         │ brand           │
+│ security_answer │                                      │ price           │
+│ password_hint   │                                      │ mrp             │
+│ is_active       │                                      │ stock           │
+│ address         │                                      │ threshold       │
+│ phone           │                                      │ discount_percent│
+│ created_date    │                                      │ is_active       │
+└────────┬────────┘                                      │ image_url       │
+         │                                               │ rating_avg      │
+         │                                               │ total_ratings   │
+         │                                               │ created_date    │
+         │                                               └────────┬────────┘
+         │                                                        │
+         │                                                        │
+         │                ┌─────────────────┐                    │
+         │                │     CART        │                    │
+         │                ├─────────────────┤                    │
+         └───────────────►│ cart_id (PK)    │                    │
+                          │ buyer_id (FK)   │                    │
+                          │ product_id (FK) │◄───────────────────┘
+                          │ quantity        │
+                          │ added_date      │
+                          └─────────────────┘
+                              │         │
+                              │         │
+                              │         └──────────────────────────────┐
+                              │                                        │
+┌─────────────────┐           │          ┌─────────────────┐          │
+│   FAVOURITES    │           │          │     ORDERS      │          │
+├─────────────────┤           │          ├─────────────────┤          │
+│ favourite_id(PK)│           │          │ order_id (PK)   │          │
+│ buyer_id (FK)   │◄──────────┘          │ buyer_id (FK)   │◄─────────┘
+│ product_id (FK) │◄─────────────────────► total_amount    │
+│ added_date      │                      │ final_amount    │
+└─────────────────┘                      │ delivery_address│
+                                         │ status          │
+                                         │ order_date      │
+                                         │ shipping_date   │
+                                         │ delivery_date   │
+                                         └────────┬───────┘
+                                                  │
+                                                  │1
+                                                  │
+                                         ┌────────▼───────┐
+                                         │  ORDER_ITEMS   │
+                                         ├────────────────┤
+                                         │ order_item_id  │
+                                  ┌──────►│ order_id (FK)  │
+                                  │       │ product_id (FK)│
+                                  │       │ quantity       │
+                                  │       │ unit_price     │
+                                  │       │ total_price    │
+                                  │       └────────────────┘
+                                  │
+                          ┌───────┴───────┐
+                          │   PRODUCTS    │
+                          │               │
+                          └───────────────┘
+
+┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
+│    REVIEWS      │         │  NOTIFICATIONS  │         │    PAYMENTS     │
+├─────────────────┤         ├─────────────────┤         ├─────────────────┤
+│ review_id (PK)  │         │ notification_id │         │ payment_id (PK) │
+│ product_id (FK) │◄────────┤ user_id (FK)    │◄────────┤ order_id (FK)   │
+│ buyer_id (FK)   │◄────────┤ title           │         │ payment_method  │
+│ order_id (FK)   │         │ message         │         │ amount          │
+│ rating          │         │ is_read         │         │ payment_status  │
+│ title           │         │ notification_type│        │ transaction_id  │
+│ comment_text    │         │ created_at      │         │ payment_date    │
+│ helpful_votes   │         └─────────────────┘         └─────────────────┘
+│ not_helpful_votes│
+│ is_verified_purchase│
+│ review_date     │
+└─────────────────┘
+

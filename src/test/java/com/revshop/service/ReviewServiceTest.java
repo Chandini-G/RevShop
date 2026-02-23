@@ -17,13 +17,13 @@ public class ReviewServiceTest {
 
     @Test
     public void testAddReview() {
-        reviewService.addReview(testProductId, testBuyerId, 5, "Excellent product!");
-        // Prints nothing, just checks method runs
+        boolean result = reviewService.addReview(testProductId, testBuyerId, 5, "Excellent product!");
+        System.out.println("Add review result: " + (result ? "Success" : "Failed"));
     }
 
     @Test
-    public void testViewReviews() {
-        reviewService.viewReviews(testProductId);
+    public void testViewProductReviews() {
+        reviewService.viewProductReviews(testProductId);
         // Should print reviews in console
     }
 
@@ -31,5 +31,21 @@ public class ReviewServiceTest {
     public void testViewSellerReviews() {
         reviewService.viewSellerReviews(testSellerId);
         // Should print reviews for seller's products
+    }
+    
+    @Test
+    public void testGetRatingSummary() {
+        String summary = reviewService.getRatingSummary(testProductId);
+        System.out.println("Rating Summary: " + summary);
+    }
+    
+    @Test
+    public void testDeleteReview() {
+        // Note: This will only work if you know an existing review ID
+        // int existingReviewId = 1; // Replace with actual review ID
+        // boolean result = reviewService.deleteReview(existingReviewId, testBuyerId, "BUYER");
+        // System.out.println("Delete review result: " + (result ? "Success" : "Failed"));
+        
+        System.out.println("Delete review test skipped - requires existing review ID");
     }
 }

@@ -9,14 +9,11 @@ public class PaymentServiceTest {
 
     @Before
     public void setup() {
-        // Initialize before each test
         paymentService = new PaymentService();
     }
 
     @Test
     public void testMakePayment() {
-        // Call the method inside the test
-        paymentService.makePayment();
-        // Output: "Payment successful (simulated)"
+        paymentService.makePayment(1000.0, "COD"); // Added parameters
     }
 }

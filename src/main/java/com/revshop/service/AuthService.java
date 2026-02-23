@@ -4,18 +4,29 @@ import com.revshop.dao.AuthDAO;
 import com.revshop.model.User;
 
 public class AuthService {
-
-    private final AuthDAO dao = new AuthDAO();
+    private AuthDAO authDAO = new AuthDAO();
 
     public boolean register(User user) {
-        return dao.register(user);
+        return authDAO.register(user);
     }
 
     public User login(String email, String password) {
-        return dao.login(email, password);
+        return authDAO.login(email, password);
     }
 
-    public boolean forgotPassword(String email, String answer, String newPassword) {
-        return dao.resetPassword(email, answer, newPassword);
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        return authDAO.changePassword(email, oldPassword, newPassword);
+    }
+
+    public String getSecurityQuestion(String email) {
+        return authDAO.getSecurityQuestion(email);
+    }
+
+    public String getPasswordHint(String email) {
+        return authDAO.getPasswordHint(email);
+    }
+
+    public boolean forgotPassword(String email, String securityAnswer, String newPassword) {
+        return authDAO.forgotPassword(email, securityAnswer, newPassword);
     }
 }
